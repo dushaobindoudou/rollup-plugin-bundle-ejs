@@ -1,25 +1,28 @@
-# rollup-plugin-bundle-html
+# rollup-plugin-bundle-ejs
 This plugin inject the bundle js file as well as external js files to html template.
 This plugin extends from [rollup-plugin-fill-html](https://github.com/alwaysonlinetxm/rollup-plugin-fill-html) to provide
 more flexibility for injecting files.
 
 ## Installation
 
-    yarn add --dev rollup-plugin-bundle-html
+    yarn add --dev rollup-plugin-bundle-ejs
 
 or
 
-    npm install -D rollup-plugin-bundle-html
+    npm install -D rollup-plugin-bundle-ejs
 
 ## Usage
 ```js
-import html from 'rollup-plugin-bundle-html';
+import html from 'rollup-plugin-bundle-ejs';
 
 export default {
   input: 'src/main.js',
   output: {
     file: 'dist/foo/bundle.js',
   },
+  renderOption: {},
+  compilerOptions: {},
+  compli
   plugins: [
     html({
         template: 'src/template.html',

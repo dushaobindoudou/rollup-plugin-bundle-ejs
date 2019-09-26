@@ -1,12 +1,12 @@
 {
-  "name": "rollup-plugin-bundle-html",
-  "version": "0.2.0",
+  "name": "rollup-plugin-bundle-ejs",
+  "version": "0.1.0",
   "description": "create html with the bundle file",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
-  "repository": "https://github.com/haifeng2013/rollup-plugin-bundle-html.git",
-  "bugs": "https://github.com/haifeng2013/rollup-plugin/issues",
-  "author": "louisx",
+  "repository": "https://github.com/dushaobindoudou/rollup-plugin-bundle-ejs.git",
+  "bugs": "https://github.com/dushaobindoudou/rollup-plugin-bundle-ejs/issues",
+  "author": "dushaobindoudou",
   "license": "MIT",
   "files": [
     "src",
@@ -16,13 +16,13 @@
   "keywords": [
     "rollup",
     "rollup-plugin",
-    "html",
-    "bundle-html"
+    "ejs",
+    "bundle-ejs"
   ],
   "scripts": {
     "build": "rollup -c",
     "eslint": "eslint src",
-    "prepublish": "npm run eslint && npm run build"
+    "prepublish": "yarn eslint && yarn build"
   },
   "devDependencies": {
     "eslint": "^5.0.1",
@@ -34,6 +34,9 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
-    "hasha": "^3.0.0"
+    "ejs": "^2.7.1",
+    "hasha": "^3.0.0",
+    "html-minifier": "^4.0.0",
+    "rollup-plugin-json": "^4.0.0"
   }
 }
