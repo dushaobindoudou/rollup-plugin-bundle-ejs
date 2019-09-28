@@ -1,0 +1,18 @@
+{
+    "extends": ["airbnb-base", "airbnb-base/legacy", "prettier"],
+    "plugins": ["prettier", "jest"],
+    "rules": {
+        "prettier/prettier": "error",
+        "max-len": ["error", 180],
+        "no-console": "off",
+        "class-methods-use-this": "off",
+        "no-underscore-dangle": "off",
+        "globals": {
+            "fabric": "readonly"
+        }
+    },
+    "env": {
+        "browser": true,
+        "jest": true
+    }
+}
