@@ -2,6 +2,7 @@ import { statSync, readFileSync, writeFileSync, readdirSync, unlinkSync } from '
 import { relative, basename, sep as pathSeperator } from 'path';
 import { minify } from 'html-minifier';
 import hasha from 'hasha';
+
 const cheerio = require('cheerio');
 const { compile } = require('ejs');
 
@@ -11,12 +12,10 @@ function traverse(dir, list) {
         const file = `${dir}/${node}`;
         if (statSync(file).isDirectory()) {
             traverse(file, list);
-        } else {
-            if (/\.js$/.test(file)) {
-                list.push({ type: 'js', file });
-            } else if (/\.css$/.test(file)) {
-                list.push({ type: 'css', file });
-            }
+        } else if (/\.js$/.test(file)) {
+            list.push({ type: 'js', file });
+        } else if (/\.css$/.test(file)) {
+            list.push({ type: 'css', file });
         }
     });
 }
@@ -84,9 +83,10 @@ export default (opt = {}) => {
 
             if (Array.isArray(externals)) {
                 let firstBundle = 0;
-                externals.forEach(function(node) {
+                externals.forEach(node => {
                     if (node.pos === 'before') {
-                        fileList.splice(firstBundle++, 0, node);
+                        firstBundle += 1;
+                        fileList.splice(firstBundle, 0, node);
                     } else {
                         fileList.splice(fileList.length, 0, node);
                     }
@@ -94,7 +94,8 @@ export default (opt = {}) => {
             }
 
             fileList.forEach(node => {
-                let { type, file } = node;
+                const { type } = node;
+                let { file } = node;
                 if (ignore && file.match(ignore)) {
                     return;
                 }
@@ -105,14 +106,14 @@ export default (opt = {}) => {
                 if (/\[hash\]/.test(file)) {
                     if (file === destPath) {
                         // data.code will remove the last line of the source code(//# sourceMappingURL=xxx), so it's needed to add this
-                        code = data.code + `//# sourceMappingURL=${basename(file)}.map`;
+                        code = `${data.code}//# sourceMappingURL=${basename(file)}.map`;
                     } else {
                         code = readFileSync(file).toString();
                     }
                     if (sourcemap) {
-                        let srcmapFile = file + '.map';
-                        let srcmapCode = readFileSync(srcmapFile).toString();
-                        let srcmapHash = hasha(srcmapCode, { algorithm: 'md5' });
+                        let srcmapFile = `${file}.map`;
+                        const srcmapCode = readFileSync(srcmapFile).toString();
+                        const srcmapHash = hasha(srcmapCode, { algorithm: 'md5' });
 
                         // remove the source map file without hash
                         unlinkSync(srcmapFile);
@@ -135,12 +136,12 @@ export default (opt = {}) => {
                     ? file
                     : absolutePathPrefix + relative(destDir, file).replace(/\\/g, '/');
                 if (onlinePath) {
-                    const filename = file.split('/').slice(-1)[0];
+                    const fName = file.split('/').slice(-1)[0];
                     const slash = onlinePath.slice(-1) === '/' ? '' : '/';
-                    src = onlinePath + slash + filename;
+                    src = onlinePath + slash + fName;
                 }
                 if (node.timestamp) {
-                    src += '?t=' + new Date().getTime();
+                    src += `?t=${new Date().getTime()}`;
                 }
 
                 if (type === 'js') {
