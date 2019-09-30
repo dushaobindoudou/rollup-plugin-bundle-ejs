@@ -12,6 +12,7 @@ export default {
         resolve(),
         commonjs({
             ignore: ['conditional-runtime-dependency'],
+            sourceMap: false,
         }),
         buble(),
     ],

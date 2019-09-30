@@ -1,7 +1,8 @@
 import { statSync, readFileSync, writeFileSync, readdirSync, unlinkSync } from 'fs';
 import { relative, basename, sep as pathSeperator } from 'path';
-import { minify } from 'html-minifier';
-import hasha from 'hasha';
+
+const htmlMinifier = require('html-minifier');
+const hasha = require('hasha');
 
 const cheerio = require('cheerio');
 const { compile } = require('ejs');
@@ -27,7 +28,9 @@ function isURL(url) {
 const renderCode = (templateFn, renderOption) => {
     if (renderOption) {
         const { data, minifierOptions } = renderOption;
-        return minifierOptions ? minify(templateFn(data), minifierOptions) : templateFn(data);
+        return minifierOptions
+            ? htmlMinifier.minify(templateFn(data), minifierOptions)
+            : templateFn(data);
     }
 
     return templateFn.toString();
