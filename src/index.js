@@ -1,8 +1,9 @@
-import { statSync, readFileSync, writeFileSync, readdirSync, unlinkSync } from 'fs';
+import { statSync, readFileSync, readdirSync, unlinkSync } from 'fs';
 import { relative, basename, sep as pathSeperator } from 'path';
 
 const htmlMinifier = require('html-minifier');
 const hasha = require('hasha');
+const fse = require('fs-extra');
 
 const cheerio = require('cheerio');
 const { compile } = require('ejs');
@@ -49,12 +50,17 @@ export default (opt = {}) => {
         ignore,
         onlinePath,
         renderOption,
+        isAppendLocalFile,
         compilerOptions = defaultCompilerOptions,
     } = opt;
 
     return {
         name: 'bundle-ejs',
         writeBundle(config, data) {
+            if (!template) {
+                console.error('template参数不能为空');
+                return;
+            }
             const isHTML = /^.*<html>.*<\/html>$/.test(template);
             const htmlData = isHTML ? template : readFileSync(template).toString();
 
@@ -74,6 +80,7 @@ export default (opt = {}) => {
                     entryConfig = c;
                 }
             });
+
             const { fileName, sourcemap } = entryConfig;
             const fileList = [];
 
@@ -82,7 +89,9 @@ export default (opt = {}) => {
             const destFile = `${destDir}/${filename || basename(template)}`;
             const absolutePathPrefix = absolute ? '/' : '';
 
-            traverse(destDir, fileList);
+            if (isAppendLocalFile) {
+                traverse(destDir, fileList);
+            }
 
             if (Array.isArray(externals)) {
                 let firstBundle = 0;
@@ -121,7 +130,7 @@ export default (opt = {}) => {
                         // remove the source map file without hash
                         unlinkSync(srcmapFile);
                         srcmapFile = srcmapFile.replace('[hash]', srcmapHash);
-                        writeFileSync(srcmapFile, srcmapCode);
+                        fse.outputFileSync(srcmapFile, srcmapCode);
 
                         code = code.replace(
                             `//# sourceMappingURL=${basename(file)}.map`,
@@ -132,7 +141,7 @@ export default (opt = {}) => {
                     // remove the file without hash
                     unlinkSync(file);
                     file = file.replace('[hash]', hash);
-                    writeFileSync(file, code);
+                    fse.outputFileSync(file, code);
                 }
 
                 let src = isURL(file)
@@ -159,7 +168,7 @@ export default (opt = {}) => {
                     head.append(`<link rel="stylesheet" href="${src}">\n`);
                 }
             });
-            writeFileSync(destFile, $.html());
+            fse.outputFileSync(destFile, $.html());
         },
     };
 };

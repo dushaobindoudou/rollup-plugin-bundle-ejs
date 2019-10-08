@@ -129,7 +129,7 @@ You can pass an option to the `html()` just like above, and there are some optio
 -   **ignore**: (_optional_) specify a regex that will prevent all matching files from being injected.
 -   **onlinePath**: (_optional_) add an onlinePath prefix to the file while bundle file would be
     pushed into CDN instead of a local file.
-
+-   **isAppendLocalFile** (_optional_)  is append local file to html
 ## License
 
 MIT
